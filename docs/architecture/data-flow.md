@@ -1,13 +1,13 @@
-# FindOS Data Flow
-
-## Search
-Query → query understanding → structured constraints + semantic intent → lexical/vector retrieval → candidate transcript segments → segment ranking → group by video → video ranking → video + timestamps.
+# Data Flow
 
 ## Upload
-Validate → store original in S3 → create processing attempt → asynchronous processing → transcription → segmentation → embeddings → searchable representation → activate successful version.
+Teacher upload → object storage → Video/Video Version metadata → asynchronous processing → transcript → timestamped segments → embeddings/search representation → indexed/searchable.
 
-## Reprocessing
-Create new version → process independently → keep old active version → activate new version only after success.
+## Search
+User query → natural-language intent understanding → structured filters → lexical/semantic retrieval over transcript segments → segment ranking → group by Video → video ranking → multiple timestamps returned.
 
-## Deletion
-Remove active searchable content and selected personal relationships while retaining required history and analytics.
+## Playback
+Search result → video + timestamp → player starts slightly before the matching segment → transcript highlights the matching segment.
+
+## Replacement
+New Video Version → process independently → if successful, transaction switches current version → old version becomes retired. If failed, current version remains active.

@@ -1,65 +1,57 @@
-# FindOS Database Design
-
-## Primary database
-PostgreSQL.
-
-## Vector search
-pgvector.
+# Database Schema Design
 
 ## Core entities
-- User
-- Video
-- Course
-- Transcript Segment
-- Video Version
-- Processing Attempt
-- Rating
-- Bookmark
-- Saved Timestamp
-- Personal Playlist
-- Watch History/Watch Events
-- Search History
-- Teacher-Course Membership
-- Course-Video Membership
-- Teacher Follow
-- Audit Event
-- Analytics Events / derived aggregates
+- users
+- roles
+- user_roles
+- teacher_profiles
+- videos
+- video_versions
+- courses
+- course_teachers
+- course_videos
+- tags
+- video_tags
+- transcripts
+- transcript_segments
+- playlists
+- playlist_videos
+- watch_sessions
+- search_history
+- saved_timestamps
+- teacher_follows
+- video_ratings
+- course_ratings
+- processing_attempts
+- analytics_events
+- audit_logs
 
-## Key relationships
-- User → many Videos; each Video has one owner.
-- User → many Courses; each Course has one owner.
-- Course ↔ Video is many-to-many.
-- Course ↔ Teacher is many-to-many.
-- Video Version → many Transcript Segments; each segment belongs to exactly one version.
-- Student ↔ Video Rating has one current rating per pair.
-- Student ↔ Course Rating has one current rating per pair.
-- Student ↔ Teacher Follow is unique per pair.
+## User and authorization
+`users` stores account identity and lifecycle. `roles` stores controlled role codes/names. `user_roles` is many-to-many and uses `(user_id, role_id)` as its primary key.
 
-## Lifecycle
-Video: uploaded → processing → ready/failed.
-One current state; attempts retained.
-Video versions allow staged replacement and atomic activation.
+User fields include UUID id, name, case-insensitively unique email, optional unique phone, password hash, account status, email verification timestamp, last login timestamp, and created/updated timestamps.
 
-## Transcript
-Authoritative transcript text remains stored as data. Embeddings are derived. Segment creation is automatic and hybrid.
+Teacher approval is modeled separately through `teacher_profiles`.
 
-## Ownership and deletion
-Video owner = uploader. Course owner = creator. Teacher deletion transfers content ownership to System Admin/FindOS. Course deletion does not delete videos. Video deletion removes active searchable content, bookmarks, saved timestamps, and ratings while retaining playlists, watch/search history, and teacher analytics.
+## Content ownership
+A Video has one owner. A Course has one owner. Course membership and course-video membership are separate many-to-many relationships.
 
-## Roles
-Teacher and System Admin are User roles. Users may have multiple roles. Teacher approval is explicit.
+## Versioning
+`video_versions` represents concrete content versions. Only one version is current for a Video. Processing a replacement does not affect the current version until the replacement succeeds.
 
-## Integrity
-Important constraints include ownership, rating range 1–5, unique student/video rating, unique student/course rating, and unique student/teacher follow.
+## Transcript hierarchy
+Video → Video Version → Transcript → Transcript Segment.
 
-## IDs and timestamps
-Prefer UUIDs for externally visible IDs. Important records use created_at and updated_at.
+Segments contain sequence number, start time, end time, and text. Embeddings are derived search data attached to the segment representation.
 
-## Consistency
-Use transactions for atomic multi-record state transitions such as version activation and rating updates.
+## Student-owned data
+Personal playlists, watch sessions, saved timestamps, follows, ratings, and search history are separate from teacher-managed courses.
+
+## Analytics and audit
+Raw analytics events support derived aggregates. Audit logs capture administrative actions and targets.
+
+## Integrity constraints
+Use foreign keys, unique constraints, check constraints, and transactions for invariants and critical state changes.
 
 ## Indexing
-Prioritize ownership, relationship lookups, history, uniqueness, and segment/version lookups.
-
-## Scale
-Search/segment retrieval is the expected major bottleneck. Measure latency, index size, memory, write performance, and database load before adding separate infrastructure.
+Start with ownership, relationship, history, uniqueness, version/current-state, and transcript lookup indexes. Add search-specific indexes based on measured query plans and latency.

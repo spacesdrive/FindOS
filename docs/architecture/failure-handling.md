@@ -1,19 +1,16 @@
-# FindOS Failure Handling
+# Failure Handling
 
-## Upload
-Reject unsupported formats, corrupted files, invalid/missing metadata, and missing audio.
+## Database
+Use transactions for critical multi-record state transitions. Foreign keys and unique constraints protect integrity.
 
-## Processing
-Mark failed, retain active version, record failure, require manual retry.
+## Video processing
+A failed processing attempt is recorded with stage and error information. The current working version remains active when a replacement fails.
 
-## Reprocessing
-Old searchable version remains active until replacement succeeds.
+## Duplicate uploads
+V1 detects duplicates and allows the user/admin flow to choose replacement, separate upload, or cancellation.
 
-## YouTube
-Unavailable source can be marked unavailable and removed from normal search/watch until re-indexed.
+## Search
+If semantic/vector search is unavailable in V1, the search operation returns an explicit error according to the API contract rather than silently pretending degraded semantic search succeeded.
 
-## Integrity
-Database constraints should enforce important invariants where practical: required ownership, valid rating range, unique current ratings, unique follows.
-
-## Async concerns
-Implementation must account for idempotency, duplicate jobs, timeouts, partial failure, ordering, backpressure, and recovery.
+## Future distributed-system concerns
+As workers scale, explicitly address timeouts, retries, duplicate messages, ordering, backpressure, idempotency, partial failure, and recovery.

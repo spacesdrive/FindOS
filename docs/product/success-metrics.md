@@ -1,37 +1,22 @@
-# FindOS Initial Success Metrics
+# Initial Success Metrics
 
 ## Search
-- Search latency
-- Precision@K
-- Recall@K
-- MRR
-- NDCG
-- Timestamp relevance
+- Search latency, measured at API and retrieval layers.
+- Relevance using a labeled query set.
+- Precision@K, Recall@K, MRR, and NDCG as the search evaluation matures.
+
+## Video processing
+- Ingestion success rate.
+- Processing failure rate by stage.
+- Processing duration by stage.
 
 ## Timestamp accuracy
-Target: relevant explanation point within ±5 seconds. Measure actual explanation point, not intentional player lead-in.
+- Target timestamp accuracy: within ±5 seconds of the actual explanation point.
 
-## Processing
-- Valid upload success rate
-- Processing failure rate
-- Manual retry success
-- Processing duration
-- Time to searchable state
+## Product behavior
+- Search-result click rate.
+- Timestamp-jump usage.
+- Watch time and completion behavior.
+- Bookmark/saved-timestamp usage.
 
-## Usage
-- Search-to-video click rate
-- Timestamp jump rate
-- Percentage watched
-- Bookmark/save rate
-- Rating participation
-- Follow rate
-- Share rate
-
-## Reliability
-- API error rate
-- Processing failure rate
-- Search failure rate
-- Database latency
-- Search latency
-
-The guide recommends representative labeled queries and metrics such as Precision@K, Recall@K, MRR, NDCG, and latency. fileciteturn0file0L556-L576
+The guide recommends evaluating search with a representative labeled query set rather than relying on subjective inspection. fileciteturn0file0L556-L576

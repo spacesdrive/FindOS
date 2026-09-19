@@ -1,19 +1,16 @@
-# ADR-002: Process Videos Asynchronously
+# ADR-002: Asynchronous Video Processing
 
 ## Context
-Video processing includes audio, transcription, segmentation, embeddings, and indexing.
+Transcription, segmentation, embedding, and indexing are long-running operations.
 
 ## Decision
-Use asynchronous processing.
+Uploads return quickly after durable storage/initial state creation. Background workers process Video Versions asynchronously.
 
 ## Why
-Upload requests should not wait for expensive processing.
+Long-running processing should not block API requests.
 
 ## Tradeoffs
-Requires state tracking, workers, and failure handling.
+Requires queueing, worker state, failure handling, observability, and idempotency.
 
-## Consequences
-One current processing state exists and processing attempts are retained. V1 requires manual retry.
-
-## Reconsideration
-Revisit retry and queue design as workload grows.
+## V1
+Manual retry is used. Automatic retry/DLQ behavior is deferred until required.

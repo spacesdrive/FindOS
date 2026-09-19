@@ -1,24 +1,33 @@
-# FindOS System Overview
+# System Overview
 
 ```text
 Client
   |
   v
-API
-  |--------------------|
-  v                    v
-PostgreSQL          Search
-  |                 PostgreSQL + pgvector
+Backend API
   |
-  v
-Async Processing
+  +---- PostgreSQL
+  |       |
+  |       +---- application data
+  |       +---- transcripts
+  |       +---- pgvector embeddings
+  |       +---- analytics/audit
   |
-S3 / transcription / embeddings
+  +---- S3
+  |       |
+  |       +---- original videos
+  |       +---- durable processing artifacts
+  |
+  +---- Queue
+          |
+          v
+        Workers
+          |
+          +---- audio extraction
+          +---- transcription
+          +---- segmentation
+          +---- embedding
+          +---- indexing
 ```
 
-PostgreSQL is the authoritative relational store. pgvector stores transcript-segment embeddings. S3 stores original video and durable processing artifacts.
-
-Search is segment-first:
-query → query understanding → lexical + semantic retrieval → segment ranking → group by video → video ranking → video + timestamps.
-
-Exact queue, worker, transcription provider, embedding model, API framework, and AWS topology remain open implementation decisions.
+The architecture starts simple and grows only when measured requirements justify additional infrastructure.

@@ -1,24 +1,20 @@
-# ADR-004: PostgreSQL + pgvector
+# ADR-004: PostgreSQL and pgvector
 
 ## Context
-FindOS needs relational data and semantic search over transcript segments.
+FindOS needs relational data, transactions, constraints, complex relationships, and semantic search capabilities.
 
 ## Options
-1. PostgreSQL only
-2. PostgreSQL + pgvector
-3. PostgreSQL + separate vector database such as Pinecone
+- PostgreSQL + pgvector
+- PostgreSQL + external vector database
 
 ## Decision
-Use PostgreSQL as the primary relational database and pgvector for transcript-segment embeddings.
+Use PostgreSQL as the primary database and pgvector for initial vector search.
 
 ## Why
-This keeps relational data, authoritative transcript text, timestamps, and embeddings in one initial data platform while avoiding premature infrastructure.
+This keeps the initial system simpler while supporting both relational and vector workloads.
 
 ## Tradeoffs
-Transactional and vector workloads share infrastructure. Very large workloads may require separation.
+A single database may eventually become a bottleneck for search at large scale. That is a measurement-driven future decision, not a V1 assumption.
 
-## Measurement
-Track vector/lexical/hybrid latency, index size, memory, write performance, CPU/load.
-
-## Reconsideration
-Revisit if measured latency, scale, availability, or operational needs exceed the approach.
+## Consequences
+Transcript text remains authoritative in PostgreSQL. Embeddings are derived data and can be regenerated.

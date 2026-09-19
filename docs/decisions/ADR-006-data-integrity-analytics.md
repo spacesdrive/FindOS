@@ -1,17 +1,16 @@
-# ADR-006: Data Integrity, History, and Analytics
+# ADR-006: Data Integrity and Analytics
+
+## Context
+FindOS needs strong relational integrity and enough event data to measure search and product behavior.
 
 ## Decision
-Enforce critical invariants with database constraints where practical:
-- video requires owner
-- course requires creator
-- rating is 1–5
-- one current student/video rating
-- one current student/course rating
-- one student/teacher follow
+Use database constraints for uniqueness and relationships, transactions for critical state transitions, raw analytics events for behavioral data, and durable audit logs for administrative actions.
 
-Store history/events separately from current state where useful. Retain processing attempts, search history, watch events, and audit events. Analytics use raw events plus derived aggregates.
+## Why
+Constraints prevent invalid states at the database boundary. Raw events preserve detail for later aggregate definitions.
 
-Users may have multiple roles. No student enrollment in V1.
+## Tradeoffs
+Event storage grows over time and requires retention/aggregation strategy.
 
-## Consequence
-The schema distinguishes current state, relationships, and event/history data.
+## Measurement
+Monitor event volume, query performance, storage growth, and aggregate usefulness.

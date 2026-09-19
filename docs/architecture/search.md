@@ -1,27 +1,21 @@
-# FindOS Search Architecture
+# Search Architecture
 
-## Primary unit
-Transcript Segment.
+## Retrieval unit
+Transcript Segment is the primary retrieval unit.
 
-## Flow
-Query → query understanding → structured constraints + semantic intent → lexical + vector retrieval → candidate segments → segment ranking → group by video → video ranking → video + timestamps.
+## Retrieval flow
+1. Understand natural-language query intent.
+2. Keep structured filters structured.
+3. Retrieve matching transcript segments using lexical and/or semantic signals.
+4. Rank segments.
+5. Group by Video.
+6. Use the strongest relevant segment to inform Video ranking.
+7. Return one result per Video with multiple matching timestamps where appropriate.
 
-## Segment signals
-- semantic similarity
-- keyword/text matching
-- metadata such as title/tags
+## Ranking signals
+Segment ranking can combine semantic similarity, lexical/text matching, and metadata. Video ranking considers relevance first, then query-specific engagement and content quality.
 
-## Video signals
-- relevance
-- query-specific engagement
-- content quality
-
-Correctness is a prerequisite for high-quality ranking.
-
-## Storage direction
-PostgreSQL stores authoritative transcript text and relational metadata. pgvector stores segment embeddings. Segment-level search is primary. Video-level embeddings are not primary retrieval.
-
-A separate vector database is not required initially. Reconsider only after measured scale/latency/operational requirements justify it.
+Correctness is a prerequisite for high-quality ranking. Global popularity must not dominate a clearly relevant result.
 
 ## Evaluation
-Precision@K, Recall@K, MRR, NDCG, latency, and timestamp accuracy.
+Use a labeled query set and metrics such as Precision@K, Recall@K, MRR, NDCG, and latency. The guide describes a 100–500 query evaluation set as a useful scale for relevance work. fileciteturn0file0L556-L576

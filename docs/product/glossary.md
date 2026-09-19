@@ -1,33 +1,23 @@
-# FindOS Glossary
+# Glossary
 
-**User:** FindOS account; may have one or more roles.
+**User**: An authenticated FindOS account.
 
-**Student:** Primary search/watch role.
+**Role**: An authorization role such as STUDENT, TEACHER, ADMIN, or SUPER_ADMIN.
 
-**Teacher/Professor:** Content-provider role; upload requires approval.
+**Teacher approval**: The separate approval state that controls whether a teacher can upload content.
 
-**System Admin:** Platform-management role.
+**Video**: The logical FindOS content entity.
 
-**Video:** Searchable video from FindOS upload or YouTube source.
+**Video Version**: A concrete uploaded or indexed version of a Video, allowing safe replacement.
 
-**Course:** Teacher-owned collection of videos; a video may belong to multiple courses.
+**Transcript**: Timestamped textual representation of a Video Version.
 
-**Personal Playlist:** Student-owned video collection.
+**Transcript Segment**: A searchable timestamped portion of a transcript.
 
-**Transcript:** Text generated from video audio.
+**Course**: A teacher-managed collection of videos.
 
-**Transcript Segment:** Timestamped, semantically coherent transcript chunk used as the primary search unit.
+**Personal Playlist**: A student-owned collection of videos.
 
-**Embedding:** Vector representation derived from transcript text.
+**Processing Attempt**: One execution attempt for a processing stage.
 
-**pgvector:** PostgreSQL extension for vector storage/search.
-
-**Video Version:** Processed/searchable version used for atomic replacement.
-
-**Processing Attempt:** One attempt to create a processed/searchable version.
-
-**Ownership:** Control relationship. Video owner is uploader; course owner is creator.
-
-**Course Membership:** Teacher-course association; membership does not imply ownership.
-
-**Query-Specific Engagement:** Engagement related to a particular search query rather than global popularity.
+**Search representation**: Searchable data derived from authoritative content, including embeddings.

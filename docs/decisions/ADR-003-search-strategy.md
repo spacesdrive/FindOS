@@ -1,22 +1,16 @@
-# ADR-003: Segment-First Hybrid Search
+# ADR-003: Segment-First Search
 
 ## Context
-FindOS must locate concepts inside long videos and jump to timestamps.
+Users want the concept and timestamp where it is explained.
 
 ## Decision
-Rank transcript segments first, group them by video, then rank videos.
+Retrieve and rank transcript segments first, then group results by Video and return matching timestamps.
 
-## Signals
-Semantic similarity, lexical matching, metadata, query-specific engagement, and content quality.
-
-## Vector direction
-Use PostgreSQL + pgvector initially rather than a separate vector database.
+## Why
+The segment is the smallest useful search unit and maps directly to the timestamp-jump experience.
 
 ## Tradeoffs
-More segments to index, but more precise timestamp retrieval.
+Requires careful segmenting and grouping/ranking logic.
 
 ## Measurement
-Precision@K, Recall@K, MRR, NDCG, latency, and timestamp accuracy.
-
-## Reconsideration
-Introduce separate search/vector infrastructure only when measurements justify it.
+Evaluate relevance with labeled queries and Precision@K, Recall@K, MRR, NDCG, plus latency.

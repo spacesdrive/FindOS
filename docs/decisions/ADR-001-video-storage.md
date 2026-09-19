@@ -1,16 +1,16 @@
-# ADR-001: Store Original Videos in Amazon S3
+# ADR-001: Video Storage
 
 ## Context
-FindOS stores large video files.
+FindOS stores uploaded and indexed video content.
 
 ## Decision
-Store original videos in Amazon S3. PostgreSQL stores metadata and S3 object references.
+Store original videos and durable processing artifacts in Amazon S3. PostgreSQL stores metadata and object references.
 
 ## Why
-Object storage is appropriate for large durable video files.
+Object storage is appropriate for large binary files, while PostgreSQL remains the system of record for metadata and relationships.
 
 ## Tradeoffs
-Adds object-storage integration and access-control/lifecycle requirements.
+Requires object-storage lifecycle and access controls. Database transactions cannot atomically include S3 operations, so application state transitions must be designed carefully.
 
 ## Reconsideration
-Revisit if storage cost, access patterns, or infrastructure requirements change.
+Revisit if storage cost, access patterns, compliance, or delivery requirements change.

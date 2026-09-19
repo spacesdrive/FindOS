@@ -1,11 +1,13 @@
-# FindOS Video Processing
+# Video Processing
 
-VIDEO → STORAGE → AUDIO → TRANSCRIPTION → TIMESTAMPED TRANSCRIPT → HYBRID SEGMENTATION → EMBEDDINGS → SEARCH REPRESENTATION.
+Pipeline:
 
-Teachers do not manually create segments. Segmentation uses timestamps, sentence boundaries, and semantic coherence.
+VIDEO → STORAGE → PROCESSING → AUDIO → TRANSCRIPTION → TIMESTAMPED SEGMENTS → SEARCH REPRESENTATIONS → INDEX
 
-A segment conceptually contains video/version association, transcript text, start time, end time, and embedding.
+Processing is asynchronous. The API records an initial processing state and workers advance the Video Version through stages.
 
-Processing is asynchronous. One current state exists; processing attempts are retained. V1 requires manual retry after failure.
+Each stage should be designed for idempotency. Processing attempts are stored for diagnostics. V1 uses manual retry rather than automatic retry.
 
-For replacement, the old active version remains searchable until the new version succeeds. A failed replacement does not affect the old active version.
+Failures mark the relevant version/attempt as failed. A failed replacement does not replace the current working version.
+
+The guide requires explicit processing state, retries/failure handling, idempotency, and metrics as the pipeline matures. fileciteturn0file0L223-L245

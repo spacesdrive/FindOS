@@ -1,12 +1,13 @@
-# FindOS V1 Non-Goals
+# Database Non-Goals for V1
 
-- Private/unpublished course mode
-- Student course enrollment
-- Teacher-authored transcript segmentation
-- Automatic processing retries
-- Follow-teacher notifications
-- Core search dominated by personalization
-- Separate vector database before measurements justify it
-- Unlimited upload size
-- Raw video replacement through normal metadata editing
-- Manual transcript editing through normal video editing
+- No microservice-per-entity architecture.
+- No Kafka.
+- No Kubernetes.
+- No Pinecone initially.
+- No separate search cluster initially.
+- No formal student course enrollment.
+- No notification system.
+- No automatic processing retry system in V1.
+- No normalized word-level timestamp table initially.
+- No dedicated recommendation ML system.
+- No complex personalization engine.
