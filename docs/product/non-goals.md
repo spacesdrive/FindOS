@@ -1,17 +1,12 @@
 # FindOS V1 Non-Goals
 
-## Purpose
-- This document defines capabilities intentionally excluded from FindOS V1. Excluding them protects the first release from uncontrolled scope growth.
-
-## Excluded capabilities
-- Paid subscriptions and subscription management
-- Course payments or monetization
-- Native mobile applications
-- Live video
-- Video editing
-- Automatic course generation
-- Video platforms other than YouTube
-- Whole-public-internet video search
-
-## Scope principle
-- V1 is an educational video search product centered on teacher-provided content and administrator-added YouTube content. Complexity should be justified by actual product requirements rather than introduced preemptively.
+- Private/unpublished course mode
+- Student course enrollment
+- Teacher-authored transcript segmentation
+- Automatic processing retries
+- Follow-teacher notifications
+- Core search dominated by personalization
+- Separate vector database before measurements justify it
+- Unlimited upload size
+- Raw video replacement through normal metadata editing
+- Manual transcript editing through normal video editing

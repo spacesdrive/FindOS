@@ -1,100 +1,13 @@
-# FindOS Architecture: Data Flow
+# FindOS Data Flow
 
-## Student Search
+## Search
+Query → query understanding → structured constraints + semantic intent → lexical/vector retrieval → candidate transcript segments → segment ranking → group by video → video ranking → video + timestamps.
 
-```text
-Query
-  |
-  v
-Query understanding
-  |
-  +--------------------+
-  |                    |
-  v                    v
-Semantic retrieval   Lexical retrieval
-  |                    |
-  +---------+----------+
-            |
-            v
-     Candidate segments
-            |
-            v
-      Segment ranking
-            |
-            v
-       Group by video
-            |
-            v
-      Video ranking
-            |
-            v
- Video + timestamps
-            |
-            v
-         Student
-```
+## Upload
+Validate → store original in S3 → create processing attempt → asynchronous processing → transcription → segmentation → embeddings → searchable representation → activate successful version.
 
-Structured constraints such as teacher, course, duration, rating and upload date are handled using structured data.
+## Reprocessing
+Create new version → process independently → keep old active version → activate new version only after success.
 
-## Video Upload
-
-```text
-Teacher
-  |
-  v
-Validation
-  |
-  +--> invalid --> exact error
-  |
-  v
-Amazon S3
-  |
-  v
-Processing state
-  |
-  v
-Return status
-  |
-  v
-Background processing
-```
-
-## Processing
-
-```text
-S3 video
-   |
-   v
-Processing
-   |
-   v
-Audio
-   |
-   v
-Transcript
-   |
-   v
-Timestamped segments
-   |
-   v
-Search representations
-   |
-   v
-Search index
-   |
-   v
-Searchable
-```
-
-## Replacement
-
-```text
-Old searchable version
-          |
-       reprocess
-       /       \
-   success    failure
-      |          |
-      v          v
- replace      keep old
-```
+## Deletion
+Remove active searchable content and selected personal relationships while retaining required history and analytics.

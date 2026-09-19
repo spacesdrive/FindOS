@@ -1,31 +1,11 @@
-# FindOS Architecture: Video Processing
+# FindOS Video Processing
 
-## Goal
-Turn uploaded or indexed videos into searchable, timestamp-aware content without blocking the upload request.
+VIDEO → STORAGE → AUDIO → TRANSCRIPTION → TIMESTAMPED TRANSCRIPT → HYBRID SEGMENTATION → EMBEDDINGS → SEARCH REPRESENTATION.
 
-## Pipeline
+Teachers do not manually create segments. Segmentation uses timestamps, sentence boundaries, and semantic coherence.
 
-```text
-VIDEO -> STORAGE -> PROCESSING -> AUDIO -> TRANSCRIPTION
-      -> TIMESTAMPED SEGMENTS -> SEARCH REPRESENTATIONS -> INDEX
-```
+A segment conceptually contains video/version association, transcript text, start time, end time, and embedding.
 
-## V1 Rules
-- Maximum direct-upload size: 1 GB.
-- No video-duration limit.
-- No audio track: reject immediately.
-- Unsupported/corrupt input: reject.
-- Required metadata must be present and valid.
-- Tags: 3 to 10.
-- Duplicate: detect and offer replace, separate upload or cancel.
-- Complete transcription failure: processing failure.
-- Poor transcript quality: may publish with a warning.
+Processing is asynchronous. One current state exists; processing attempts are retained. V1 requires manual retry after failure.
 
-## Async Behavior
-The upload request stores the video and returns a processing status. Processing runs in the background.
-
-## Versioning
-The currently searchable version remains active during reprocessing. A successful replacement becomes active. A failed replacement leaves the old version active and causes no user-visible replacement.
-
-## Open Engineering Questions
-Queue technology, idempotency, retry mechanics, artifact locations, progress representation, transcript-quality evaluation and worker scaling remain to be designed.
+For replacement, the old active version remains searchable until the new version succeeds. A failed replacement does not affect the old active version.

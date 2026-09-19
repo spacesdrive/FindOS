@@ -1,28 +1,40 @@
 # FindOS Learning Log
 
 ## Milestone 0: Product Definition
+FindOS primarily helps students find specific concepts inside long lectures. Teachers/professors provide lecture content. Search is relevance-driven and timestamp-aware.
 
-### What I built
-Defined the V1 product requirements for FindOS, including users, content sources, search behavior, timestamp behavior, roles, moderation, authentication scope, video lifecycle, analytics, success metrics and non-goals.
+Important decisions:
+- Guests search like students but watch only 30 seconds before login is required.
+- Teachers require admin approval before upload.
+- Search checks transcript even when title metadata matches.
+- Results are one result per video with multiple relevant timestamps.
+- Timestamp accuracy target is ±5 seconds from the actual explanation point.
+- Personalization is used for recommendations/home/search suggestions, not as the dominant core-search signal.
+- Processing is asynchronous and failed processing requires manual retry in V1.
+- Old searchable video versions remain active until replacement succeeds.
 
-### What I learned
-- Product requirements should be explicit before architecture.
-- Search results need a precise result contract, not just “show relevant videos.”
-- Timestamp accuracy is a measurable product property.
-- Engagement signals must be distinguished from relevance signals.
-- Failed processing should not destroy a working searchable version.
-- Scope boundaries are necessary to prevent V1 from becoming multiple products.
+## Milestone 1: Architecture
+- Original videos use Amazon S3.
+- Processing is asynchronous.
+- Durable artifacts can use S3; authoritative metadata is relational.
+- Search is segment-first.
+- Structured filters remain structured data.
 
-### Major decisions
-- Students are the primary user.
-- Teachers/professors are content providers.
-- YouTube is the only external source in V1.
-- One result is returned per video, with multiple matching timestamps.
-- Guest playback is limited to 30 seconds.
-- Maximum upload size is 1 GB with no duration limit.
-- Poor transcripts can be published with a warning; complete transcription failure is not successful searchable processing.
-- Reprocessing uses old-version preservation until successful replacement.
-- Paid subscriptions and payments are V2/non-goals for V1.
+## Milestone 2: Database Design
+- Core entities: User, Video, Course, Transcript Segment.
+- Teacher and System Admin are roles of User.
+- Video owner is uploader. Course owner is creator.
+- Courses can have multiple teachers and videos can belong to multiple courses.
+- Transcript Segment belongs to exactly one Video Version.
+- Ratings are unique per student/video and per student/course.
+- PostgreSQL is the primary database.
+- pgvector stores segment embeddings.
+- Transcript text remains authoritative; embeddings are derived.
+- Hybrid segmentation uses timestamps, sentence boundaries, and semantic coherence.
+- Processing has one current state plus retained processing attempts.
+- Video versions support atomic replacement.
+- Analytics use raw events plus derived aggregates where useful.
+- Search performance is expected to be the main scaling pressure.
 
-### Open implementation questions
-Exact search relevance thresholds, ranking formula, authentication policy details, duplicate-detection method, transcript-quality evaluation, moderation duration rules, and infrastructure choices are intentionally deferred to later engineering milestones.
+## Next
+Database schema → database ADR → API contracts → backend implementation.

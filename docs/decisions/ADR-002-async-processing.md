@@ -1,30 +1,19 @@
 # ADR-002: Process Videos Asynchronously
 
 ## Context
-A 1 GB, multi-hour lecture can take substantial time to transcribe and index.
-
-## Problem
-Blocking an upload request until processing finishes creates poor user experience and unreliable long-running requests.
-
-## Options Considered
-1. Synchronous processing
-2. Store and process asynchronously
-3. Immediately split into many independent distributed services
+Video processing includes audio, transcription, segmentation, embeddings, and indexing.
 
 ## Decision
-Store the video, create processing state, return status, and process in the background.
+Use asynchronous processing.
 
 ## Why
-Upload acknowledgement stays fast and processing can be monitored and scaled independently.
+Upload requests should not wait for expensive processing.
 
 ## Tradeoffs
-Requires job/state management and explicit failure handling. Searchability becomes eventually consistent with upload.
+Requires state tracking, workers, and failure handling.
 
-## Failure Policy
-V1 marks failed processing as failed and requires a teacher-initiated retry. Existing searchable versions remain active during replacement processing.
-
-## Measurement
-Measure processing duration, queue delay, success rate, failure rate and retry rate.
+## Consequences
+One current processing state exists and processing attempts are retained. V1 requires manual retry.
 
 ## Reconsideration
-Revisit if measured workload requires automatic retries or more independently scalable stages.
+Revisit retry and queue design as workload grows.

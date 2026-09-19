@@ -1,66 +1,27 @@
-# FindOS Architecture: Search
+# FindOS Search Architecture
 
-## Product Contract
-Search covers:
-- Video titles
-- Descriptions
-- Tags
-- Transcript text
-- Course/playlist names
-- Teacher names
+## Primary unit
+Transcript Segment.
 
-V1 returns one result per video and may show multiple relevant timestamps.
+## Flow
+Query → query understanding → structured constraints + semantic intent → lexical + vector retrieval → candidate segments → segment ranking → group by video → video ranking → video + timestamps.
 
-## Hybrid Retrieval
+## Segment signals
+- semantic similarity
+- keyword/text matching
+- metadata such as title/tags
 
-```text
-Query
-  |
-  v
-Query understanding
-  |
-  +----------------------+
-  |                      |
-  v                      v
-Semantic retrieval    Lexical retrieval
-  |                      |
-  +----------+-----------+
-             |
-             v
-      Candidate segments
-             |
-             v
-       Segment ranking
-             |
-             v
-        Group by video
-             |
-             v
-        Video ranking
-```
+## Video signals
+- relevance
+- query-specific engagement
+- content quality
 
-## Segment Ranking Signals
-- Semantic similarity
-- Keyword/text matching
-- Metadata signals such as title and tags
+Correctness is a prerequisite for high-quality ranking.
 
-## Video Ranking Priorities
-1. Relevance
-2. Query-specific engagement
-3. Content quality
+## Storage direction
+PostgreSQL stores authoritative transcript text and relational metadata. pgvector stores segment embeddings. Segment-level search is primary. Video-level embeddings are not primary retrieval.
 
-Potential engagement signals: watch time, percentage watched, views, timestamp jumps, bookmarks, ratings, shares, follows and search-result clicks.
-
-Teacher authority does not automatically override relevance.
-
-## Structured Constraints
-Query understanding may extract teacher, course, duration, rating, upload date and topic/category constraints. These are applied using structured data.
-
-## Result Threshold
-Reasonably related but imperfect content is shown as partial matches. Clearly unrelated content produces “No relevant results found.”
-
-## Failure
-If semantic/vector search is unavailable in V1, return a search error rather than silently falling back.
+A separate vector database is not required initially. Reconsider only after measured scale/latency/operational requirements justify it.
 
 ## Evaluation
-Use a labeled query set and evaluate Precision@K, Recall@K, MRR, NDCG, timestamp accuracy and latency.
+Precision@K, Recall@K, MRR, NDCG, latency, and timestamp accuracy.

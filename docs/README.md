@@ -1,13 +1,18 @@
-# FindOS Documentation
+# FindOS Engineering Documentation
 
-## Milestone 0
-Product definition documents are under `product/`.
+## Current phase
+Milestone 2: Database Design
 
-## Milestone 1
-Architecture documents are under `architecture/`.
+## Current direction
+- PostgreSQL is the primary relational database.
+- pgvector is the initial vector-search approach.
+- Transcript Segment is the primary search unit.
+- Transcript segmentation is hybrid: timestamps + sentence boundaries + semantic coherence.
+- Videos are stored in Amazon S3.
+- Video processing is asynchronous.
+- Search ranks transcript segments first, then groups by video and ranks videos.
+- Video owner = uploader.
+- Course owner = creator.
+- Teacher and System Admin are User roles, not separate account entities.
 
-## Architecture decisions
-ADRs are under `decisions/`.
-
-## Learning
-`learning-log.md` records major learning and decisions.
+Prefer the simplest architecture that satisfies measured requirements.
